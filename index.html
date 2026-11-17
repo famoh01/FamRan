@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f1a">
+<title>Fam Ai · Campus Wars — เกมแรน โมบาย</title>
+<meta name="description" content="เกมอาร์เคดแนวโรงเรียนป่วน เล่นบนมือถือแนวตั้ง 3 สายตัวละคร 3 ด่าน 3 บอส มี APK ให้ติดตั้ง">
+<style>
+  :root{--bg:#0b0f1a;--panel:#141a2a;--line:rgba(255,255,255,.09);--violet:#7c5cff;--violet2:#b39dff;--gold:#ffd166;--mint:#7cf2a6;--txt:#eef2ff;--dim:#9aa5bd}
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif;
+    -webkit-font-smoothing:antialiased}
+  body{background:radial-gradient(120% 80% at 50% 0%,#1a2140 0%,#0b0f1a 55%,#070a12 100%);
+    padding:24px 16px calc(28px + env(safe-area-inset-bottom))}
+  .wrap{max-width:760px;margin:0 auto}
+  header{text-align:center;padding:18px 0 6px}
+  .moon{font-size:54px;filter:drop-shadow(0 0 26px rgba(255,209,102,.55));line-height:1}
+  h1{margin:6px 0 0;font-size:clamp(28px,8vw,42px);letter-spacing:.4px;
+    background:linear-gradient(92deg,#fff,#b39dff 55%,#ffd166);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--dim);font-size:12.5px;letter-spacing:3.4px;text-transform:uppercase;margin-top:4px}
+  .tagline{color:#c8d2ea;font-size:14px;margin:14px auto 0;max-width:520px;line-height:1.7}
+
+  .card{background:linear-gradient(180deg,rgba(30,38,60,.9),rgba(18,24,38,.94));
+    border:1px solid var(--line);border-radius:20px;padding:16px;margin-top:16px;
+    box-shadow:0 22px 48px -30px #000}
+  .btn{display:flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;
+    border-radius:15px;padding:16px;font-size:16px;font-weight:800;color:#fff;
+    background:linear-gradient(180deg,#8b6dff,#5b3fd6);
+    box-shadow:0 14px 28px -16px #7c5cff,inset 0 1px 0 rgba(255,255,255,.25);
+    transition:transform .08s,filter .16s}
+  .btn:active{transform:translateY(1px) scale(.997);filter:brightness(.95)}
+  .btn.alt{background:linear-gradient(180deg,#26304a,#1a2236);box-shadow:inset 0 1px 0 rgba(255,255,255,.07);border:1px solid var(--line)}
+  .btn.gold{background:linear-gradient(180deg,#ffd166,#e8a91d);color:#231a00;box-shadow:0 14px 28px -16px #ffd166}
+  .btn + .btn{margin-top:10px}
+  .btn small{display:block;font-weight:500;font-size:11px;opacity:.8;margin-top:2px}
+
+  h2{font-size:15px;letter-spacing:.6px;text-transform:uppercase;color:#8b96ad;margin:26px 0 10px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+  .tile{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:15px;padding:13px}
+  .tile .ico{font-size:22px}
+  .tile b{display:block;margin-top:6px;font-size:14px}
+  .tile i{display:block;font-style:normal;color:var(--dim);font-size:11.5px;margin-top:3px;line-height:1.5}
+
+  ol.steps{margin:0;padding-left:20px;color:#c8d2ea;font-size:13.5px;line-height:2}
+  ol.steps b{color:#fff}
+  code{background:rgba(124,92,255,.16);padding:1px 6px;border-radius:6px;font-size:12px}
+
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
+  .stats div{background:rgba(124,92,255,.09);border:1px solid rgba(124,92,255,.22);border-radius:14px;padding:12px 6px}
+  .stats b{display:block;font-size:19px;color:var(--gold)}
+  .stats span{font-size:11px;color:var(--dim)}
+
+  footer{text-align:center;color:#5d6884;font-size:11.5px;margin-top:26px;line-height:1.9}
+  footer a{color:#8b96ad}
+  .warn{background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.25);border-radius:14px;
+    padding:12px 14px;color:#ffd88a;font-size:12.5px;line-height:1.7;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="moon">🌙</div>
+    <h1>Fam Ai</h1>
+    <div class="sub">Campus Wars</div>
+    <p class="tagline">เกมอาร์เคดแนวโรงเรียนป่วน — เล่นบนมือถือแนวตั้งด้วยนิ้วอย่างเดียว<br>
+      3 สายตัวละคร · 3 ด่าน · 3 บอส · 6 เควสต์ · ออฟไลน์ 100%</p>
+  </header>
+
+  <div class="card">
+    <a class="btn gold" href="./game/www/index.html">▶ เล่นเลย (ในเบราว์เซอร์)<small>ไม่ต้องติดตั้ง · เล่นได้ทันทีบนมือถือ</small></a>
+    <a class="btn" href="./releases/FamAi_CampusWars.apk" download>⬇ ดาวน์โหลด APK<small>Android 7.0+ · 170 KB · ออฟไลน์ 100%</small></a>
+    <a class="btn alt" href="https://github.com/famoh01/FamRan/releases/tag/v1.0.0">📦 Releases (APK + เว็บ)<small>หน้าดาวน์โหลดบน GitHub</small></a>
+  </div>
+
+  <div class="stats">
+    <div><b>3</b><span>สายตัวละคร</span></div>
+    <div><b>3</b><span>ด่าน + บอส</span></div>
+    <div><b>6</b><span>เควสต์</span></div>
+  </div>
+
+  <h2>วิธีเล่น</h2>
+  <div class="grid">
+    <div class="tile"><div class="ico">🕹️</div><b>จอยซ้าย</b><i>ลากนิ้วเพื่อเดิน — ใช้พื้นที่ครึ่งซ้ายล่างได้ทั้งนั้น</i></div>
+    <div class="tile"><div class="ico">⚔️</div><b>ปุ่มโจมตี</b><i>กดค้างไว้ = ฟันต่อเนื่องไม่หยุด</i></div>
+    <div class="tile"><div class="ico">✨</div><b>สกิล 2 ปุ่ม</b><i>ปลดที่ Lv.2 และ Lv.4 · มีวงแหวนคูลดาวน์</i></div>
+    <div class="tile"><div class="ico">🧪</div><b>ยาฟื้นเลือด</b><i>ซื้อเพิ่มได้ที่ร้านค้าในเกม</i></div>
+  </div>
+
+  <h2>ติดตั้ง APK บนมือถือ</h2>
+  <div class="card">
+    <ol class="steps">
+      <li>กด <b>⬇ ดาวน์โหลด APK</b> ด้านบน</li>
+      <li>เปิดไฟล์ที่โหลด → Android จะถาม <b>“อนุญาตติดตั้งจากแหล่งที่ไม่รู้จัก”</b> → อนุญาต</li>
+      <li>กด <b>ติดตั้ง</b> → เปิดแอป <b>Fam Ai Campus Wars</b></li>
+    </ol>
+  </div>
+
+  <h2>ในคลังนี้มีอะไร</h2>
+  <div class="grid">
+    <div class="tile"><div class="ico">🎮</div><b>game/www</b><i>ซอร์สเกม HTML5 Canvas ทั้งหมด</i></div>
+    <div class="tile"><div class="ico">🤖</div><b>android</b><i>WebView shell + build_apk.sh (aapt2→apksigner)</i></div>
+    <div class="tile"><div class="ico">📥</div><b>releases</b><i>APK พร้อมติดตั้ง</i></div>
+    <div class="tile"><div class="ico">🖥️</div><b>client-pc</b><i>GoldenG-MCL LastChaos (สำรอง / การศึกษา)</i></div>
+  </div>
+
+  <div class="warn">
+    ⚠️ เกมนี้ <b>สร้างใหม่ด้วย HTML5</b> ตามคอนเซปต์ Campus Wars — ไม่ได้คอมไพล์จากโปรเจกต์ Unity
+    ต้นฉบับ (ต้องใช้ Unity Editor + License + Android NDK ซึ่งไม่มีในสภาพแวดล้อมที่สร้าง)
+    อ่านรายละเอียดได้ที่ <code>docs/LIMITS-TH.md</code>
+  </div>
+
+  <footer>
+    Made with 🌙 by <b>Fam Ai</b><br>
+    <a href="https://github.com/famoh01/FamRan">github.com/famoh01/FamRan</a> · MIT (โค้ดเกม)
+  </footer>
+</div>
+</body>
+</html>
