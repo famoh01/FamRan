@@ -1,0 +1,16 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# build artifacts (สร้างใหม่ได้จาก build_apk.sh)
+android/out/
+android/*.keystore
+*.class
+*.dex
+
+# client runtime junk
+client-pc/client-core/Temp/
+client-pc/client-core/ScreenShots/
+*.log
+*.dmp

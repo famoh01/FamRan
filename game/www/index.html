@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f1a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Fam Ai · Campus Wars</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="build/icon-192.png">
+<style>
+  :root{
+    --bg:#0b0f1a; --panel:#141a2a; --panel2:#1b2338; --line:rgba(255,255,255,.08);
+    --violet:#7c5cff; --violet2:#b39dff; --mint:#7cf2a6; --gold:#ffd166; --red:#ff6b6b;
+    --txt:#eef2ff; --dim:#9aa5bd;
+    --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);overflow:hidden;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif;
+    user-select:none;-webkit-user-select:none;touch-action:none;overscroll-behavior:none}
+  canvas#game{position:fixed;inset:0;display:block;width:100%;height:100%;background:#0b0f1a;z-index:1}
+  .hidden{display:none !important}
+
+  /* ---------- screens ---------- */
+  .screen{position:fixed;inset:0;z-index:20;display:none;flex-direction:column;overflow-y:auto;
+    padding:calc(18px + var(--safe-t)) 16px calc(18px + var(--safe-b));
+    background:radial-gradient(120% 90% at 50% 0%,#1a2140 0%,#0b0f1a 58%,#070a12 100%);
+    touch-action:pan-y}
+  .screen.active{display:flex;animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .logo{text-align:center;margin:10px 0 4px}
+  .logo .moon{font-size:40px;filter:drop-shadow(0 0 18px rgba(255,209,102,.55))}
+  .logo h1{margin:2px 0 0;font-size:clamp(26px,8vw,38px);letter-spacing:.5px;
+    background:linear-gradient(92deg,#fff,#b39dff 55%,#ffd166);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .logo .sub{color:var(--dim);font-size:13px;margin-top:2px;letter-spacing:2px;text-transform:uppercase}
+  .ver{position:absolute;right:14px;top:calc(10px + var(--safe-t));font-size:11px;color:#5d6884}
+
+  .menu-card{background:linear-gradient(180deg,rgba(30,38,60,.92),rgba(20,26,42,.95));border:1px solid var(--line);
+    border-radius:20px;padding:14px;margin:12px auto 0;max-width:520px;width:100%;box-shadow:0 18px 40px -24px #000}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:14px;
+    padding:15px 16px;font-size:16px;font-weight:700;color:#fff;background:linear-gradient(180deg,#8b6dff,#5b3fd6);
+    box-shadow:0 10px 22px -12px #7c5cff,inset 0 1px 0 rgba(255,255,255,.25);margin-top:10px;cursor:pointer;
+    transition:transform .08s ease,filter .15s ease}
+  .btn:active{transform:translateY(1px) scale(.995);filter:brightness(.95)}
+  .btn.alt{background:linear-gradient(180deg,#26304a,#1a2236);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);border:1px solid var(--line)}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--dim);font-weight:600;font-size:14px;padding:12px}
+  .btn:disabled{opacity:.45;filter:saturate(.4)}
+  .btn-row{display:flex;gap:10px}
+  .btn-row .btn{margin-top:10px}
+
+  .save-line{display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+  .save-badge{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:22px;
+    background:linear-gradient(160deg,var(--c2),var(--c1));box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+  .save-name{font-weight:700}
+  .save-sub{font-size:12px;color:var(--dim);margin-top:2px}
+
+  h2.page{font-size:20px;margin:6px 0 2px;text-align:center}
+  p.hint{color:var(--dim);font-size:13px;text-align:center;margin:4px 0 10px}
+
+  /* class cards */
+  .class-grid{display:grid;grid-template-columns:1fr;gap:10px;max-width:560px;width:100%;margin:0 auto}
+  .class-card{display:flex;align-items:center;gap:12px;padding:13px;border-radius:16px;cursor:pointer;
+    background:linear-gradient(180deg,rgba(32,40,64,.9),rgba(18,24,38,.92));border:1px solid var(--line);transition:.15s}
+  .class-card.sel{border-color:var(--violet2);box-shadow:0 0 0 2px rgba(124,92,255,.35),0 16px 30px -22px #000}
+  .cc-ico{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;flex:none;
+    background:linear-gradient(160deg,var(--c2),var(--c1));box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+  .cc-txt b{display:block;font-size:16px}
+  .cc-txt i{display:block;font-size:12px;color:var(--dim);font-style:normal;margin-top:2px;line-height:1.35}
+  #class-detail{margin:12px auto 0;max-width:560px;width:100%}
+  .cd{background:linear-gradient(180deg,rgba(30,38,60,.9),rgba(18,24,38,.94));border:1px solid var(--line);border-radius:18px;padding:14px}
+  .cd-head{display:flex;gap:12px;align-items:center}
+  .cd-ico{width:54px;height:54px;border-radius:15px;display:grid;place-items:center;font-size:27px;background:linear-gradient(160deg,var(--c2),var(--c1))}
+  .cd-head b{font-size:18px}.cd-head i{display:block;color:var(--dim);font-size:12px;font-style:normal}
+  .cd-desc{color:#c8d2ea;font-size:13px;line-height:1.5;margin:10px 0}
+  .cd-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .cd-stats div{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center}
+  .cd-stats span{display:block;font-size:10px;color:var(--dim);letter-spacing:1px}
+  .cd-stats b{font-size:16px}
+  .cd-skills{margin-top:10px;display:grid;gap:8px}
+  .sk{display:flex;gap:10px;align-items:flex-start;background:rgba(124,92,255,.10);border:1px solid rgba(124,92,255,.25);border-radius:12px;padding:9px 10px}
+  .sk span{font-size:18px}.sk b{font-size:13px}.sk i{display:block;font-size:11.5px;color:var(--dim);font-style:normal;margin-top:2px;line-height:1.4}
+
+  /* ---------- HUD ---------- */
+  #hud{position:fixed;inset:0;z-index:10;pointer-events:none;padding:calc(8px + var(--safe-t)) 10px 0}
+  .topbar{display:flex;align-items:center;gap:8px;max-width:640px;margin:0 auto}
+  .avatar{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:20px;flex:none;
+    background:linear-gradient(160deg,#b39dff,#5b3fd6);box-shadow:0 8px 18px -12px #000, inset 0 1px 0 rgba(255,255,255,.3)}
+  .bars{flex:1;min-width:0}
+  .bar{position:relative;height:15px;border-radius:9px;background:rgba(4,8,16,.72);border:1px solid var(--line);overflow:hidden}
+  .bar + .bar{margin-top:4px;height:9px;border-radius:6px}
+  .bar i{display:block;height:100%;width:0;border-radius:inherit;transition:width .18s ease}
+  #hp-fill{background:linear-gradient(90deg,#2ecc71,#7cf2a6)}
+  #xp-fill{background:linear-gradient(90deg,#7c5cff,#b39dff)}
+  .bar span{position:absolute;inset:0;display:grid;place-items:center;font-size:10.5px;font-weight:700;
+    letter-spacing:.4px;text-shadow:0 1px 2px #000}
+  .chip{display:flex;align-items:center;gap:5px;background:rgba(4,8,16,.72);border:1px solid var(--line);
+    border-radius:11px;padding:6px 9px;font-size:12.5px;font-weight:700;white-space:nowrap}
+  .chip.lv{color:var(--gold)}
+  .pausebtn{pointer-events:auto;width:38px;height:38px;border-radius:12px;background:rgba(4,8,16,.72);
+    border:1px solid var(--line);color:#fff;font-size:15px;display:grid;place-items:center}
+
+  .questpill{pointer-events:auto;display:flex;align-items:center;gap:9px;max-width:640px;margin:8px auto 0;
+    background:linear-gradient(90deg,rgba(124,92,255,.22),rgba(4,8,16,.55));border:1px solid rgba(124,92,255,.35);
+    border-radius:13px;padding:7px 11px;backdrop-filter:blur(6px)}
+  .questpill .qi{font-size:15px}
+  .questpill .qt{flex:1;min-width:0;font-size:12.5px;display:flex;flex-direction:column;gap:4px}
+  .questpill .qt b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .qbar{height:5px;border-radius:4px;background:rgba(0,0,0,.45);overflow:hidden}
+  .qbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffd166,#ff9f43);border-radius:4px;transition:width .25s}
+  .questpill .qp{font-size:11px;color:var(--gold);font-weight:700}
+
+  #boss-wrap{max-width:520px;margin:8px auto 0;text-align:center}
+  #boss-name{font-size:12px;font-weight:700;color:#ffb3b3;text-shadow:0 1px 3px #000}
+  #boss-bar{height:12px;margin-top:3px;border-radius:7px;background:rgba(4,8,16,.8);border:1px solid rgba(255,107,107,.45);overflow:hidden}
+  #boss-fill{height:100%;width:100%;background:linear-gradient(90deg,#e74c3c,#ff9f43);transition:width .2s}
+
+  /* ---------- overlays ---------- */
+  #toast{position:fixed;left:50%;top:calc(118px + var(--safe-t));transform:translate(-50%,-12px);z-index:40;
+    padding:10px 16px;border-radius:13px;font-size:13px;font-weight:600;max-width:88vw;text-align:center;
+    opacity:0;pointer-events:none;transition:.25s;box-shadow:0 16px 30px -18px #000;border:1px solid rgba(255,255,255,.12)}
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+
+  #zone-card{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(.92);z-index:38;text-align:center;
+    padding:18px 26px;border-radius:22px;background:linear-gradient(180deg,rgba(16,22,38,.92),rgba(10,14,24,.94));
+    border:1px solid rgba(124,92,255,.4);box-shadow:0 30px 60px -30px #000;opacity:0;transition:.45s cubic-bezier(.2,.9,.3,1);pointer-events:none}
+  #zone-card.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .z-name{font-size:22px;font-weight:800;background:linear-gradient(90deg,#fff,#b39dff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .z-sub{font-size:12px;color:var(--dim);margin-top:3px}
+  .z-boss{font-size:12px;color:#ffd166;margin-top:8px}
+
+  #loading{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:radial-gradient(120% 90% at 50% 20%,#1a2140,#0b0f1a 60%,#070a12)}
+  #loading .moon{font-size:56px;animation:float 2.6s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(-4px)}50%{transform:translateY(6px)}}
+  #loading h1{font-size:26px;margin:8px 0 2px;background:linear-gradient(92deg,#fff,#b39dff 55%,#ffd166);-webkit-background-clip:text;background-clip:text;color:transparent}
+  #loading .sub{color:var(--dim);font-size:12px;letter-spacing:3px;text-transform:uppercase}
+  .loadbar{width:190px;height:5px;border-radius:4px;background:rgba(255,255,255,.1);margin-top:20px;overflow:hidden}
+  .loadbar i{display:block;height:100%;width:20%;background:linear-gradient(90deg,#7c5cff,#ffd166);animation:load 1.1s ease-in-out infinite}
+  @keyframes load{0%{transform:translateX(-100%)}100%{transform:translateX(520%)}}
+  #loading-tip{color:#8b96ad;font-size:12px;margin-top:18px;max-width:80vw;text-align:center;line-height:1.5}
+
+  /* settings rows */
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;border-radius:14px;
+    background:rgba(255,255,255,.04);border:1px solid var(--line);margin-top:10px;max-width:520px;width:100%;margin-left:auto;margin-right:auto}
+  .row b{font-size:14px}.row i{display:block;font-size:11.5px;color:var(--dim);font-style:normal;margin-top:2px}
+  .switch{position:relative;width:50px;height:29px;flex:none}
+  .switch input{opacity:0;width:100%;height:100%;margin:0;position:absolute;z-index:2}
+  .switch span{position:absolute;inset:0;border-radius:99px;background:#2a3350;transition:.2s;border:1px solid var(--line)}
+  .switch span::after{content:"";position:absolute;width:23px;height:23px;border-radius:50%;background:#eef2ff;top:2px;left:2px;transition:.2s}
+  .switch input:checked + span{background:linear-gradient(180deg,#8b6dff,#5b3fd6)}
+  .switch input:checked + span::after{transform:translateX(21px)}
+
+  .about p{color:#c8d2ea;font-size:13px;line-height:1.65;max-width:520px;margin:8px auto}
+  .about code{background:rgba(124,92,255,.16);padding:1px 6px;border-radius:6px;font-size:12px}
+
+  /* shop + quests */
+  .sheet{max-width:560px;margin:0 auto;width:100%}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .sheet-head b{font-size:18px}
+  .shop-row{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:12px;margin-top:9px;
+    border-radius:14px;background:linear-gradient(180deg,rgba(32,40,64,.9),rgba(18,24,38,.92));border:1px solid var(--line);color:var(--txt)}
+  .shop-row.poor{opacity:.55}
+  .shop-ico{font-size:22px;width:36px;text-align:center}
+  .shop-txt{flex:1;min-width:0}
+  .shop-txt b{font-size:14px}
+  .shop-txt i{display:block;font-size:11.5px;color:var(--dim);font-style:normal;margin-top:2px}
+  .shop-price{font-weight:800;color:var(--gold);font-size:13px;white-space:nowrap}
+  .quest-row{display:flex;gap:10px;padding:12px;border-radius:14px;margin-top:9px;border:1px solid var(--line);
+    background:linear-gradient(180deg,rgba(32,40,64,.9),rgba(18,24,38,.92))}
+  .quest-row.locked{opacity:.55}
+  .quest-row.active{border-color:rgba(124,92,255,.45);box-shadow:0 0 0 1px rgba(124,92,255,.18)}
+  .quest-row.done{opacity:.75}
+  .q-check{width:22px;text-align:center;font-size:14px}
+  .q-main{flex:1;min-width:0}
+  .q-main b{font-size:13.5px}
+  .q-bar{height:6px;border-radius:4px;background:rgba(0,0,0,.45);margin-top:6px;overflow:hidden}
+  .q-bar i{display:block;height:100%;background:linear-gradient(90deg,#2ecc71,#7cf2a6)}
+  .q-sub{display:block;font-size:11px;color:var(--dim);font-style:normal;margin-top:5px}
+
+  #dead-stats{text-align:center;margin:6px 0 4px}
+  #dead-stats .ds{font-size:13px;color:#c8d2ea;margin-top:4px}
+  #dead-stats .ds.small{font-size:11.5px;color:var(--dim)}
+  #dead-stats .ds b{font-size:17px;color:#fff}
+
+  @media (min-width:720px){
+    .class-grid{grid-template-columns:1fr 1fr}
+    #class-detail{grid-column:span 2}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<!-- ================= HUD ================= -->
+<div id="hud" class="hidden">
+  <div class="topbar">
+    <div class="avatar" id="avatar">🗡️</div>
+    <div class="bars">
+      <div class="bar"><i id="hp-fill"></i><span id="hp-text">100 / 100</span></div>
+      <div class="bar"><i id="xp-fill"></i></div>
+    </div>
+    <div class="chip lv" id="lv-text">Lv.1</div>
+    <div class="chip">🌙 <span id="gold">0</span></div>
+    <div class="chip">🧪 <span id="potion-count">x0</span></div>
+    <button class="pausebtn" id="btn-pause" aria-label="pause">⏸</button>
+  </div>
+
+  <div class="questpill">
+    <span class="qi">📜</span>
+    <div class="qt"><b id="quest-title">—</b><div class="qbar"><i id="quest-fill"></i></div></div>
+    <span class="qp" id="quest-prog">0/0</span>
+  </div>
+
+  <div id="boss-wrap" class="hidden">
+    <div id="boss-name">บอส</div>
+    <div id="boss-bar"><div id="boss-fill"></div></div>
+  </div>
+</div>
+
+<!-- ================= BOOT ================= -->
+<div id="loading">
+  <div class="moon">🌙</div>
+  <h1>Fam Ai</h1>
+  <div class="sub">Campus Wars</div>
+  <div class="loadbar"><i></i></div>
+  <div id="loading-tip">กำลังโหลด…</div>
+</div>
+
+<!-- ================= MENU ================= -->
+<section class="screen" data-screen="menu">
+  <div class="ver">v1.0.0</div>
+  <div class="logo">
+    <div class="moon">🌙</div>
+    <h1>Fam Ai</h1>
+    <div class="sub">Campus Wars</div>
+  </div>
+  <div class="menu-card">
+    <div id="continue-box" class="hidden"></div>
+    <button class="btn" id="btn-resume" style="display:none">▶ เล่นต่อ</button>
+    <button class="btn alt" id="btn-newgame">✨ เริ่มใหม่ (สร้างตัวละคร)</button>
+    <div class="btn-row">
+      <button class="btn ghost" id="btn-settings">⚙ ตั้งค่า</button>
+      <button class="btn ghost" id="btn-about">ℹ เกี่ยวกับ</button>
+    </div>
+    <p class="hint" id="menu-tip">—</p>
+  </div>
+</section>
+
+<!-- ================= CLASS PICK ================= -->
+<section class="screen" data-screen="classpick">
+  <h2 class="page">เลือกสายการต่อสู้</h2>
+  <p class="hint">แตะการ์ดเพื่อดูรายละเอียด · ตัวละครจะเก็บเลเวลจากการต่อสู้</p>
+  <div class="class-grid" id="class-list">
+    <div class="class-card" data-cls="warrior">
+      <div class="cc-ico" style="--c1:#ff9f43;--c2:#ffd166">🗡️</div>
+      <div class="cc-txt"><b>นักรบ · Warrior</b><i>เลือดหนา ฟันแรง ระยะสั้น</i></div>
+    </div>
+    <div class="class-card" data-cls="mage">
+      <div class="cc-ico" style="--c1:#7c5cff;--c2:#b39dff">🔮</div>
+      <div class="cc-txt"><b>จอมเวท · Mage</b><i>ยิงไกล ระเบิดเป็นวง เลือดบาง</i></div>
+    </div>
+    <div class="class-card" data-cls="archer">
+      <div class="cc-ico" style="--c1:#2ecc71;--c2:#a8f0c6">🏹</div>
+      <div class="cc-txt"><b>นักธนู · Archer</b><i>ยิงไว ระยะไกลสุด วิ่งเร็ว</i></div>
+    </div>
+  </div>
+  <div id="class-detail"></div>
+  <button class="btn" id="btn-continue" disabled style="max-width:560px;margin:14px auto 0;width:100%">ไปกันเลย ▶</button>
+  <button class="btn ghost" data-back style="max-width:560px;margin:10px auto 0;width:100%">ย้อนกลับ</button>
+</section>
+
+<!-- ================= PAUSE ================= -->
+<section class="screen" data-screen="pause">
+  <h2 class="page">พักเกม</h2>
+  <div id="pause-stats" class="menu-card" style="text-align:center;line-height:1.7;font-size:13.5px;color:#c8d2ea"></div>
+  <div style="max-width:520px;margin:0 auto;width:100%">
+    <button class="btn" id="p-resume">▶ เล่นต่อ</button>
+    <button class="btn alt" id="p-shop">🛒 ร้านค้า</button>
+    <button class="btn alt" id="p-quests">📜 เควสต์</button>
+    <button class="btn alt" id="p-settings">⚙ ตั้งค่า</button>
+    <button class="btn ghost" id="p-quit">ออกไปเมนูหลัก</button>
+  </div>
+</section>
+
+<!-- ================= SHOP ================= -->
+<section class="screen" data-screen="shop">
+  <div class="sheet">
+    <div class="sheet-head"><b>🛒 ร้านค้า</b><span class="chip">🌙 <span id="shop-gold">0</span></span></div>
+    <p class="hint">เงิน 🌙 ได้จากการกำจัดศัตรูและเก็บของที่ตก</p>
+    <div id="shop-list"></div>
+    <button class="btn alt" id="shop-close" style="margin-top:14px">← กลับ</button>
+  </div>
+</section>
+
+<!-- ================= QUESTS ================= -->
+<section class="screen" data-screen="quests">
+  <div class="sheet">
+    <div class="sheet-head"><b>📜 เควสต์</b></div>
+    <p class="hint">เควสต์จะปลดเมื่ออยู่ด่านที่ถูกต้อง</p>
+    <div id="quest-list"></div>
+    <button class="btn alt" id="quests-close" style="margin-top:14px">← กลับ</button>
+  </div>
+</section>
+
+<!-- ================= SETTINGS ================= -->
+<section class="screen" data-screen="settings">
+  <h2 class="page">ตั้งค่า</h2>
+  <div class="row"><div><b>เสียง</b><i>ปิด/เปิดเอฟเฟกต์เสียง</i></div>
+    <label class="switch"><input type="checkbox" id="set-mute"><span></span></label></div>
+  <div class="row"><div><b>สั่น</b><i>สั่นเมื่อโดนโจมตี (ถ้าเครื่องรองรับ)</i></div>
+    <label class="switch"><input type="checkbox" id="set-vibe" checked><span></span></label></div>
+  <div class="row"><div><b>ล้างเซฟ</b><i>เริ่มเกมใหม่ทั้งหมด</i></div>
+    <button class="btn ghost" id="set-reset" style="width:auto;padding:10px 14px;margin:0">ล้าง</button></div>
+  <button class="btn alt" data-back style="max-width:520px;margin:14px auto 0;width:100%">← กลับ</button>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="screen" data-screen="about">
+  <div class="about">
+    <h2 class="page">เกี่ยวกับเกม</h2>
+    <p><b>Fam Ai · Campus Wars</b> — เกมอาร์เคดแอ็กชันแนว โรงเรียนป่วน เล่นได้บนมือถือ
+      ไม่ต้องต่อเน็ต ไม่มีโฆษณา ไม่เก็บข้อมูลผู้เล่น</p>
+    <p>บังคับ: <b>จอยซ้าย</b> เดิน · <b>ปุ่ม ⚔️</b> โจมตี (กดค้างได้) · <b>ปุ่มสกิล 2 ปุ่ม</b> · <b>🧪</b> กินยา</p>
+    <p>เก็บเลเวลจากการกำจัดศัตรู · 3 ด่าน 3 บอส · 6 เควสต์ · บันทึกเซฟอัตโนมัติ</p>
+    <p><i>เกมนี้สร้างด้วย HTML5 Canvas — เล่นได้ทั้งในเบราว์เซอร์และแอป APK</i></p>
+    <p style="color:#7f8aa3;font-size:12px">© Fam Ai · v1.0.0</p>
+  </div>
+  <button class="btn alt" data-back style="max-width:520px;margin:14px auto 0;width:100%">← กลับ</button>
+</section>
+
+<!-- ================= ZONE CLEAR ================= -->
+<section class="screen" data-screen="clear">
+  <div style="margin:auto 0;text-align:center;max-width:520px;width:100%">
+    <div style="font-size:54px;filter:drop-shadow(0 0 24px rgba(255,209,102,.6))">🏆</div>
+    <h2 class="page" id="clear-title">เคลียร์ด่านแล้ว!</h2>
+    <p class="hint" id="clear-sub">—</p>
+    <div id="clear-stats" class="menu-card" style="text-align:center;line-height:1.8;font-size:13.5px;color:#c8d2ea"></div>
+    <button class="btn" id="c-next">▶ ไปด่านต่อไป</button>
+    <button class="btn alt" id="c-shop2">🛒 แวะร้านค้า</button>
+  </div>
+</section>
+
+<!-- ================= VICTORY ================= -->
+<section class="screen" data-screen="victory">
+  <div style="margin:auto 0;text-align:center;max-width:520px;width:100%">
+    <div style="font-size:60px;filter:drop-shadow(0 0 28px rgba(255,209,102,.7))">🌙</div>
+    <h2 class="page" style="font-size:24px">จบเกม — เจ้าของคืนนี้คือเธอ</h2>
+    <p class="hint">ปราบราชาโรงเรียนสำเร็จ · ทั้งแคมปัสปลอดภัยแล้ว</p>
+    <div id="victory-stats" class="menu-card" style="text-align:center;line-height:1.8;font-size:13.5px;color:#c8d2ea"></div>
+    <button class="btn" id="v-again">🔄 เริ่มรอบใหม่</button>
+    <button class="btn ghost" id="v-menu">เมนูหลัก</button>
+  </div>
+</section>
+
+<!-- ================= DEAD ================= -->
+<section class="screen" data-screen="dead">
+  <h2 class="page" style="color:#ff9f9f">💀 พลาดท่า!</h2>
+  <div id="dead-stats"></div>
+  <div style="max-width:520px;margin:14px auto 0;width:100%">
+    <button class="btn" id="d-retry">🔄 ลองอีกครั้ง</button>
+    <button class="btn ghost" id="d-menu">ออกไปเมนูหลัก</button>
+  </div>
+</section>
+
+<div id="toast"></div>
+<div id="zone-card" class="hidden"></div>
+
+<script type="module">
+  import { Game } from './src/engine.js';
+  import UI from './src/ui.js';
+  import { sfx } from './src/audio.js';
+  import { CLASSES } from './src/data.js';
+
+  const canvas = document.getElementById('game');
+  const game = new Game(canvas);
+  UI.init(game);
+
+  // avatar follows picked class
+  const setAvatar = (id) => {
+    const c = CLASSES[id];
+    const a = document.getElementById('avatar');
+    a.textContent = c.icon;
+    a.style.background = `linear-gradient(160deg,${c.color2},${c.color})`;
+  };
+
+  const origNew = game.newGame.bind(game);
+  game.newGame = (cls) => { origNew(cls); setAvatar(cls); };
+
+  const origLoad = game.loadFrom.bind(game);
+  game.loadFrom = (d) => { const ok = origLoad(d); if (ok) setAvatar(d.cls); return ok; };
+
+  game.boot({
+    write(data) { try { localStorage.setItem('famai.campuswars.save', JSON.stringify(data)); } catch (e) {} },
+    clear() { try { localStorage.removeItem('famai.campuswars.save'); } catch (e) {} },
+  });
+
+  // resume from menu -> use saved data
+  document.getElementById('btn-resume').addEventListener('click', () => {
+    const save = UI.loadSave();
+    if (save) game.loadFrom(save);
+    UI.show('play');
+    UI.hud();
+  });
+
+  // hide loading screen
+  setTimeout(() => { document.getElementById('loading').style.display = 'none'; }, 620);
+
+  // haptics on damage
+  const oldDamage = game.damagePlayer.bind(game);
+  game.damagePlayer = (d) => { const before = game.player.hp; oldDamage(d); if (game.player.hp < before && UI.loadSettings().vibe !== false) navigator.vibrate?.(18); };
+
+  // Android back button: pause -> menu -> exit
+  window.__famaiBack = function () {
+    try {
+      if (game.state === 'play') { game.pause(); return; }
+      if (UI.screen !== 'menu') { UI.show('menu'); return; }
+      if (window.FamAiAndroid && window.FamAiAndroid.exit) { window.FamAiAndroid.exit(); return; }
+      UI.toast('กดอีกครั้งเพื่อออก');
+    } catch (e) {}
+  };
+
+  // expose for tests
+  window.__game = game;
+  window.__ui = UI;
+</script>
+</body>
+</html>

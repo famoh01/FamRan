@@ -1,0 +1,17 @@
+{
+  "name": "Fam Ai · Campus Wars",
+  "short_name": "Campus Wars",
+  "description": "เกมอาร์เคดแอ็กชันแนวโรงเรียนป่วน เล่นได้บนมือถือ ไม่ต้องต่อเน็ต",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#0b0f1a",
+  "theme_color": "#0b0f1a",
+  "lang": "th",
+  "categories": ["games", "action"],
+  "icons": [
+    { "src": "build/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "build/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
